@@ -1,13 +1,17 @@
 CUSTOMERS = [
     {
         "id": 1,
-        "name": "Nashville North",
-        "address": "8422 Johnson Pike"
+        "name": "Low Boy",
+        "area": "Nashville North",
+        "address": "8422 Johnson Pike",
+        "customerId": 1
     },
     {
         "id": 2,
-        "name": "Nashville South",
-        "address": "209 Emory Drive"
+        "name": "High Boy",
+        "area": "Nashville South",
+        "address": "209 Emory Drive",
+        "customerId": 2
     }
 ]
 
@@ -45,3 +49,27 @@ def create_customer(customer):
 
     # Return the dictionary with `id` property added
     return customer
+
+def delete_customer(id):
+    # Initial -1 value for customer index, in case one isn't found
+    customer_index = -1
+
+    # Iterate the CUSTOMERS list, but use enumerate() so that you
+    # can access the index value of each item
+    for index, customer in enumerate(CUSTOMERS):
+        if customer["id"] == id:
+            # Found the customer. Store the current index.
+            customer_index = index
+
+    # If the customer was found, use pop(int) to remove it from list
+    if customer_index >= 0:
+        CUSTOMERS.pop(customer_index)
+
+def update_customer(id, new_customer):
+    # Iterate the CUSTOMERS list, but use enumerate() so that
+    # you can access the index value of each item.
+    for index, customer in enumerate(CUSTOMERS):
+        if customer["id"] == id:
+            # Found the customer. Update the value.
+            CUSTOMERS[index] = new_customer
+            break
