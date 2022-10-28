@@ -6,7 +6,7 @@ ANIMALS = [
     {
         "id": 1,
         "name": "Snickers",
-        "species": "Dog",
+        "breed": "Dog",
         "locationId": 1,
         "customerId": 4,
         "status": "Admitted"
@@ -14,7 +14,7 @@ ANIMALS = [
     {
         "id": 2,
         "name": "Roman",
-        "species": "Dog",
+        "breed": "Dog",
         "locationId": 1,
         "customerId": 2,
         "status": "Admitted"
@@ -22,7 +22,7 @@ ANIMALS = [
     {
         "id": 3,
         "name": "Blue",
-        "species": "Cat",
+        "breed": "Cat",
         "locationId": 2,
         "customerId": 1,
         "status": "Admitted"
@@ -142,7 +142,7 @@ def update_animal(id, new_animal):
             ANIMALS[index] = new_animal
             break
 
-def get_animals_by_locationId(location_id):
+def get_animals_by_location_id(location_id):
 
     with sqlite3.connect("./kennel.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
@@ -151,18 +151,23 @@ def get_animals_by_locationId(location_id):
         # Write the SQL query to get the information you want
         db_cursor.execute("""
         select
-            c.id,
-            c.name,
-            c.address,
-            c.email,
-            c.password
-        from Customer c
-        WHERE c.email = ?
+            a.id,
+            a.name,
+            a.breed,
+            a.status,
+            a.location_id,
+            a.customer_id
+        from Animal a
+        WHERE a.location_id = ?
         """, ( location_id, ))
 
-        customers = []
+        animals = []
         dataset = db_cursor.fetchall()
 
         for row in dataset:
-            customer = Customer(row['id'], row['name'], row['address'], row['email'] , row['password'])
-            customers.append(customer.__dict__)
+            animal = Animal(row['id'], row['name'], row['breed'],
+                            row['status'], row['location_id'],
+                            row['customer_id'])
+            animals.append(animal.__dict__)
+            
+    return json.dumps(animals)

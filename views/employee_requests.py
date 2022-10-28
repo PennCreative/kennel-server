@@ -6,12 +6,14 @@ EMPLOYEES = [
     {
         "id": 1,
         "name": "Johnny Puff",
-        "address": "8422 Johnson Pike"
+        "address": "8422 Johnson Pike",
+        "location_id": 2
     },
     {
         "id": 2,
         "name": "Gary Busy",
-        "address": "209 Emory Drive"
+        "address": "209 Emory Drive",
+        "location_id": 2
     }
 ]
 
@@ -110,3 +112,31 @@ def update_employee(id, new_employee):
             # Found the employee. Update the value.
             EMPLOYEES[index] = new_employee
             break
+
+def get_employees_by_location_id(location_id):
+
+    with sqlite3.connect("./kennel.sqlite3") as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+
+        # Write the SQL query to get the information you want
+        db_cursor.execute("""
+        select
+            e.id,
+            e.name,
+            e.address,
+            e.location_id
+        from Employee e
+        WHERE e.location_id = ?
+        """, ( location_id, ))
+
+        employees = []
+        dataset = db_cursor.fetchall()
+
+        for row in dataset:
+            employee = Employee(row['id'], row['name'], row['breed'],
+                            row['status'], row['location_id'],
+                            row['customer_id'])
+            employees.append(employee.__dict__)
+            
+    return json.dumps(employees)
